@@ -8,13 +8,17 @@ export default function Header() {
           <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-cyan-500 shadow-lg shadow-cyan-500/30">
             <Zap className="w-7 h-7 text-white" strokeWidth={2.5} />
           </div>
-          <div>
+          <div className="flex-1">
             <h1 className="text-2xl font-bold tracking-tight text-white">
               ElectoCalc — Rebobinage Moteur
             </h1>
             <p className="text-sm text-slate-400 mt-0.5">
               Calcul de section de fil de cuivre et nombre de spires
             </p>
+          </div>
+          <div className="text-right ml-auto">
+            <p className="text-xs text-slate-500 leading-tight">Created by <span className="text-cyan-400 font-semibold">ELECBOB</span></p>
+            <p className="text-xs text-slate-600 leading-tight">Copyright &copy; 2026</p>
           </div>
         </div>
       </div>
