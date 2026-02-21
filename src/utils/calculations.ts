@@ -169,21 +169,30 @@ export function calcElectrofrein(inp: ElectrofreinInputs): ElectrofreinResults {
   const alpha = 0.00393;
 
   if (inp.supplyType === 'ac3phase') {
-    // Bobine AC 3 phases 380V — pont de diodes triphasé intégré
-    // Tension redressée DC équivalente : Vdc = V_phase * sqrt(6) / pi ≈ 1.3505 * V_phase
-    // Pour connexion étoile : V_phase = 380 / sqrt(3) ≈ 219.4 V
-    // Vdc_rectified = 219.4 * (3*sqrt(2)/pi) ≈ 296 V  (pont 3ph entier : Vdc = Vline * 3*sqrt(2)/pi)
-    // Pont triphasé à 6 impulsions : Vdc = Vline * 3*sqrt(2)/pi
+    // Bobine AC 3 phases 380V — alimentation DIRECTE sur réseau triphasé, sans pont de diodes
+    // La bobine est dimensionnée pour fonctionner en AC à la tension de phase
+    // Connexion étoile implicite : V_phase = V_ligne / sqrt(3)
     const V_line = inp.voltage;
-    const dcEquivVoltage = V_line * (3 * Math.sqrt(2)) / Math.PI;
-    // Courant DC à partir de la puissance absorbée
-    const apparentPower = SQRT3 * V_line * inp.current;
-    const activePower = apparentPower * inp.powerFactor;
-    const dcEquivCurrent = activePower / dcEquivVoltage;
+    const phaseVoltage = V_line / SQRT3;
+    const phaseCurrent = inp.current;
 
-    const resistance = dcEquivVoltage / dcEquivCurrent;
-    const power = activePower;
+    // Impédance par phase : Z = V_phase / I_phase
+    const impedance = phaseVoltage / phaseCurrent;
 
+    // Résistance par phase : R = Z * cos(φ)
+    const resistance = impedance * inp.powerFactor;
+
+    // Réactance : X = Z * sin(φ) = Z * sqrt(1 - cos²φ)
+    const sinPhi = Math.sqrt(Math.max(0, 1 - inp.powerFactor * inp.powerFactor));
+    const reactance = impedance * sinPhi;
+
+    // Inductance : L = X / (2π * f)
+    const inductance = reactance > 0 ? reactance / (2 * Math.PI * inp.frequency) : 0;
+
+    // Puissance active totale 3 phases
+    const power = SQRT3 * V_line * phaseCurrent * inp.powerFactor;
+
+    // Dimensionnement du fil basé sur la résistance AC par phase
     const section = Math.sqrt(
       COPPER_RESISTIVITY * inp.fillFactor * (windingArea * 1e6) * (meanTurnLengthM * 1000) / (resistance * 1000)
     );
@@ -196,20 +205,13 @@ export function calcElectrofrein(inp: ElectrofreinInputs): ElectrofreinResults {
     const windingVolume = Math.PI / 4 * (De * De - Di * Di) * h * 1e9;
     const copperMassG = (totalWireLength / 1000) * (std.section / 1e6) * COPPER_DENSITY * 1000;
 
-    const phaseVoltage = V_line / SQRT3;
-    const phaseCurrent = inp.current;
-    const impedance = phaseVoltage / phaseCurrent;
-    const reactance = Math.sqrt(Math.max(0, impedance * impedance - (resistance / 3) * (resistance / 3)));
-    const inductance = reactance > 0 ? reactance / (2 * Math.PI * inp.frequency) : 0;
-
     return {
       resistance, power, wireSection: section, wireDiameter,
       standardWireDiameter: std.diameter,
       standardWireSection: std.section,
       numberOfTurns, totalWireLength, resistanceAtTemp,
       windingVolume, copperMassG, meanTurnLength: meanTurnLengthM * 1000,
-      dcEquivVoltage, dcEquivCurrent, phaseVoltage, phaseCurrent,
-      impedance, inductance,
+      phaseVoltage, phaseCurrent, impedance, inductance,
     };
   }
 

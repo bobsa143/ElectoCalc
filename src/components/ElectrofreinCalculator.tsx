@@ -99,12 +99,11 @@ export default function ElectrofreinCalculator() {
         <p className="text-sm">
           {isAC ? (
             <span className="text-cyan-800">
-              <strong>Bobine AC 3 phases 380V</strong> — Alimentation directe sur réseau triphasé via pont de diodes intégré (6 impulsions).
-              La tension DC équivalente est calculée automatiquement : V<sub>dc</sub> = V<sub>ligne</sub> × 3√2 / π ≈ 1,35 × V<sub>ligne</sub>.
+              <strong>Bobine AC 3 phases 380V — alimentation directe</strong> sans pont de diodes. La bobine est conçue pour fonctionner directement sur le réseau triphasé (impédance Z = R + jX). Le fil est dimensionné sur la résistance de phase R = Z × cos&nbsp;φ.
             </span>
           ) : (
             <span className="text-amber-700">
-              Calculateur pour bobines d'électrofrein alimentation <strong>DC</strong>. Entrez les dimensions du bobineau puis cliquez sur <strong>Calculer</strong>.
+              <strong>Bobine DC</strong> (24V, 48V, 180V, 380V rectifié…) — un <strong>pont de diodes externe</strong> est nécessaire pour redresser la tension secteur avant alimentation de la bobine. Entrez la tension et le courant DC nominaux.
             </span>
           )}
         </p>
@@ -187,25 +186,25 @@ export default function ElectrofreinCalculator() {
             <CheckCircle2 className="w-4 h-4 flex-shrink-0" />Calcul effectué avec succès.
           </div>
 
-          {isAC && res.dcEquivVoltage != null && (
+          {isAC && res.phaseVoltage != null && (
             <div className="p-4 bg-cyan-50 border border-cyan-200 rounded-xl">
-              <p className="text-xs font-semibold text-cyan-700 mb-2">Conversion AC 3Ph → DC (pont triphasé 6 impulsions)</p>
+              <p className="text-xs font-semibold text-cyan-700 mb-2">Paramètres AC par phase (connexion étoile implicite)</p>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <div className="bg-white rounded-lg p-3 border border-cyan-100 text-center">
-                  <p className="text-xs text-slate-500">V ligne AC</p>
+                  <p className="text-xs text-slate-500">V ligne</p>
                   <p className="text-base font-bold text-cyan-700">{inp.voltage} <span className="text-xs font-normal">V</span></p>
                 </div>
                 <div className="bg-white rounded-lg p-3 border border-cyan-100 text-center">
-                  <p className="text-xs text-slate-500">V phase AC</p>
-                  <p className="text-base font-bold text-cyan-700">{res.phaseVoltage?.toFixed(1)} <span className="text-xs font-normal">V</span></p>
+                  <p className="text-xs text-slate-500">V phase</p>
+                  <p className="text-base font-bold text-cyan-700">{res.phaseVoltage.toFixed(1)} <span className="text-xs font-normal">V</span></p>
                 </div>
-                <div className="bg-white rounded-lg p-3 border border-amber-100 text-center">
-                  <p className="text-xs text-slate-500">V DC équiv.</p>
-                  <p className="text-base font-bold text-amber-600">{res.dcEquivVoltage.toFixed(1)} <span className="text-xs font-normal">V</span></p>
+                <div className="bg-white rounded-lg p-3 border border-cyan-100 text-center">
+                  <p className="text-xs text-slate-500">Impédance Z</p>
+                  <p className="text-base font-bold text-cyan-700">{res.impedance?.toFixed(1)} <span className="text-xs font-normal">Ω</span></p>
                 </div>
-                <div className="bg-white rounded-lg p-3 border border-amber-100 text-center">
-                  <p className="text-xs text-slate-500">I DC équiv.</p>
-                  <p className="text-base font-bold text-amber-600">{res.dcEquivCurrent?.toFixed(3)} <span className="text-xs font-normal">A</span></p>
+                <div className="bg-white rounded-lg p-3 border border-cyan-100 text-center">
+                  <p className="text-xs text-slate-500">Inductance L</p>
+                  <p className="text-base font-bold text-cyan-700">{res.inductance != null ? (res.inductance * 1000).toFixed(1) : '—'} <span className="text-xs font-normal">mH</span></p>
                 </div>
               </div>
             </div>
@@ -216,14 +215,15 @@ export default function ElectrofreinCalculator() {
               title="Résistance et Puissance"
               icon={<Magnet className="w-4 h-4" />}
               color="amber"
-              items={[
-                { label: 'Résistance DC bobine', value: res.resistance.toFixed(3), unit: 'Ω', highlight: true },
+              items={isAC ? [
+                { label: 'Résistance / phase (R)', value: res.resistance.toFixed(3), unit: 'Ω', highlight: true },
                 { label: `Résistance à +${inp.temperatureRise}°C`, value: res.resistanceAtTemp.toFixed(3), unit: 'Ω' },
-                { label: 'Puissance absorbée', value: res.power.toFixed(2), unit: 'W', highlight: true },
-                ...(isAC && res.impedance != null ? [
-                  { label: 'Impédance par phase', value: res.impedance.toFixed(3), unit: 'Ω' },
-                  { label: 'Inductance estimée', value: res.inductance != null ? (res.inductance * 1000).toFixed(2) : '—', unit: 'mH' },
-                ] : []),
+                { label: 'Puissance active 3Ph', value: res.power.toFixed(2), unit: 'W', highlight: true },
+                { label: 'cos φ', value: inp.powerFactor.toFixed(2), unit: '' },
+              ] : [
+                { label: 'Résistance à 20°C', value: res.resistance.toFixed(3), unit: 'Ω', highlight: true },
+                { label: `Résistance à +${inp.temperatureRise}°C`, value: res.resistanceAtTemp.toFixed(3), unit: 'Ω' },
+                { label: 'Puissance dissipée', value: res.power.toFixed(2), unit: 'W', highlight: true },
               ]}
             />
             <ResultCard
@@ -253,8 +253,11 @@ export default function ElectrofreinCalculator() {
           <div className="p-4 bg-slate-50 rounded-xl border border-slate-200">
             <p className="text-xs text-slate-500">
               <span className="font-semibold text-slate-700">Formule : </span>
-              S = &#x221A;(&#x03C1; &times; k<sub>f</sub> &times; A<sub>bob</sub> &times; l<sub>moy</sub> / R<sub>DC</sub>) — A<sub>bob</sub> = {(((inp.outerDiameter - inp.innerDiameter) / 2) * inp.coilHeight).toFixed(1)} mm² — l<sub>moy</sub> = {res.meanTurnLength.toFixed(1)} mm — &#x03C1;<sub>Cu</sub> = 0,01724 &#x03A9;&#x00B7;mm²/m
-              {isAC && <> — R<sub>DC</sub> calculée via pont 3Ph&nbsp;: V<sub>dc</sub> = V<sub>L</sub> &times; 3&#x221A;2/&#x03C0;</>}
+              S = &#x221A;(&#x03C1; &times; k<sub>f</sub> &times; A<sub>bob</sub> &times; l<sub>moy</sub> / R) — A<sub>bob</sub> = {(((inp.outerDiameter - inp.innerDiameter) / 2) * inp.coilHeight).toFixed(1)} mm² — l<sub>moy</sub> = {res.meanTurnLength.toFixed(1)} mm — &#x03C1;<sub>Cu</sub> = 0,01724 &#x03A9;&#x00B7;mm²/m
+              {isAC
+                ? <> — Mode AC 3Ph&nbsp;: Z = V<sub>ph</sub>/I<sub>ph</sub> = {res.impedance?.toFixed(2)}&nbsp;&#x03A9; — R = Z &times; cos&nbsp;&#x03C6; = {res.resistance.toFixed(2)}&nbsp;&#x03A9;</>
+                : null
+              }
             </p>
           </div>
         </>
