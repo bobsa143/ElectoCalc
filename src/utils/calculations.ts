@@ -161,15 +161,61 @@ export function calcMesureResistance(inp: MesureResistanceInputs): MesureResista
 }
 
 export function calcElectrofrein(inp: ElectrofreinInputs): ElectrofreinResults {
-  const resistance = inp.voltage / inp.current;
-  const power = inp.voltage * inp.current;
-
   const Di = inp.innerDiameter / 1000;
   const De = inp.outerDiameter / 1000;
   const h = inp.coilHeight / 1000;
-
   const meanTurnLengthM = Math.PI * (Di + De) / 2;
   const windingArea = (De - Di) / 2 * h;
+  const alpha = 0.00393;
+
+  if (inp.supplyType === 'ac3phase') {
+    // Bobine AC 3 phases 380V — pont de diodes triphasé intégré
+    // Tension redressée DC équivalente : Vdc = V_phase * sqrt(6) / pi ≈ 1.3505 * V_phase
+    // Pour connexion étoile : V_phase = 380 / sqrt(3) ≈ 219.4 V
+    // Vdc_rectified = 219.4 * (3*sqrt(2)/pi) ≈ 296 V  (pont 3ph entier : Vdc = Vline * 3*sqrt(2)/pi)
+    // Pont triphasé à 6 impulsions : Vdc = Vline * 3*sqrt(2)/pi
+    const V_line = inp.voltage;
+    const dcEquivVoltage = V_line * (3 * Math.sqrt(2)) / Math.PI;
+    // Courant DC à partir de la puissance absorbée
+    const apparentPower = SQRT3 * V_line * inp.current;
+    const activePower = apparentPower * inp.powerFactor;
+    const dcEquivCurrent = activePower / dcEquivVoltage;
+
+    const resistance = dcEquivVoltage / dcEquivCurrent;
+    const power = activePower;
+
+    const section = Math.sqrt(
+      COPPER_RESISTIVITY * inp.fillFactor * (windingArea * 1e6) * (meanTurnLengthM * 1000) / (resistance * 1000)
+    );
+    const wireDiameter = 1.1284 * Math.sqrt(section);
+    const std = findStandardWire(section);
+
+    const totalWireLength = resistance * std.section / COPPER_RESISTIVITY;
+    const numberOfTurns = Math.round((totalWireLength / (meanTurnLengthM * 1000)) * 1000);
+    const resistanceAtTemp = resistance * (1 + alpha * inp.temperatureRise);
+    const windingVolume = Math.PI / 4 * (De * De - Di * Di) * h * 1e9;
+    const copperMassG = (totalWireLength / 1000) * (std.section / 1e6) * COPPER_DENSITY * 1000;
+
+    const phaseVoltage = V_line / SQRT3;
+    const phaseCurrent = inp.current;
+    const impedance = phaseVoltage / phaseCurrent;
+    const reactance = Math.sqrt(Math.max(0, impedance * impedance - (resistance / 3) * (resistance / 3)));
+    const inductance = reactance > 0 ? reactance / (2 * Math.PI * inp.frequency) : 0;
+
+    return {
+      resistance, power, wireSection: section, wireDiameter,
+      standardWireDiameter: std.diameter,
+      standardWireSection: std.section,
+      numberOfTurns, totalWireLength, resistanceAtTemp,
+      windingVolume, copperMassG, meanTurnLength: meanTurnLengthM * 1000,
+      dcEquivVoltage, dcEquivCurrent, phaseVoltage, phaseCurrent,
+      impedance, inductance,
+    };
+  }
+
+  // Mode DC
+  const resistance = inp.voltage / inp.current;
+  const power = inp.voltage * inp.current;
 
   const section = Math.sqrt(
     COPPER_RESISTIVITY * inp.fillFactor * (windingArea * 1e6) * (meanTurnLengthM * 1000) / (resistance * 1000)
@@ -179,8 +225,6 @@ export function calcElectrofrein(inp: ElectrofreinInputs): ElectrofreinResults {
 
   const totalWireLength = resistance * std.section / COPPER_RESISTIVITY;
   const numberOfTurns = Math.round((totalWireLength / (meanTurnLengthM * 1000)) * 1000);
-
-  const alpha = 0.00393;
   const resistanceAtTemp = resistance * (1 + alpha * inp.temperatureRise);
   const windingVolume = Math.PI / 4 * (De * De - Di * Di) * h * 1e9;
   const copperMassG = (totalWireLength / 1000) * (std.section / 1e6) * COPPER_DENSITY * 1000;

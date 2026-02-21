@@ -63,9 +63,14 @@ export interface RotorResults {
   copperMassKg: number;
 }
 
+export type ElectrofreinSupplyType = 'dc' | 'ac3phase';
+
 export interface ElectrofreinInputs {
+  supplyType: ElectrofreinSupplyType;
   voltage: number;
   current: number;
+  frequency: number;
+  powerFactor: number;
   innerDiameter: number;
   outerDiameter: number;
   coilHeight: number;
@@ -86,6 +91,12 @@ export interface ElectrofreinResults {
   windingVolume: number;
   copperMassG: number;
   meanTurnLength: number;
+  dcEquivVoltage?: number;
+  dcEquivCurrent?: number;
+  phaseVoltage?: number;
+  phaseCurrent?: number;
+  impedance?: number;
+  inductance?: number;
 }
 
 export type MeasureCoilType = 'stator_star' | 'stator_delta' | 'electrofrein';
