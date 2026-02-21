@@ -88,6 +88,37 @@ export interface ElectrofreinResults {
   meanTurnLength: number;
 }
 
+export type MeasureCoilType = 'stator_star' | 'stator_delta' | 'electrofrein';
+
+export interface MesureResistanceInputs {
+  measuredResistance: number;
+  coilType: MeasureCoilType;
+  innerDiameter: number;
+  outerDiameter: number;
+  coilHeight: number;
+  fillFactor: number;
+  boreDiameter?: number;
+  stackLength?: number;
+  phases?: number;
+  slots?: number;
+  polePairs?: number;
+}
+
+export interface MesureResistanceResults {
+  phaseResistance: number;
+  wireSection: number;
+  wireDiameter: number;
+  standardWireDiameter: number;
+  standardWireSection: number;
+  numberOfTurns: number;
+  totalWireLength: number;
+  meanTurnLength: number;
+  turnsPerSlot?: number;
+  copperMassG: number;
+  windingArea: number;
+  resistivityCheck: number;
+}
+
 export interface WireEntry {
   diameter: number;
   section: number;

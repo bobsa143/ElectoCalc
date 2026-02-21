@@ -2,6 +2,7 @@ import type {
   StatorInputs, StatorResults,
   RotorInputs, RotorResults,
   ElectrofreinInputs, ElectrofreinResults,
+  MesureResistanceInputs, MesureResistanceResults,
 } from '../types';
 import { findStandardWire, COPPER_RESISTIVITY, COPPER_DENSITY } from './wireData';
 
@@ -78,6 +79,85 @@ export function calcRotor(inp: RotorInputs): RotorResults {
     standardWireSection: std.section,
     turnsPerPhase, turnsPerSlot, totalWireLengthM, copperMassKg,
   };
+}
+
+export function calcMesureResistance(inp: MesureResistanceInputs): MesureResistanceResults {
+  let phaseResistance: number;
+  if (inp.coilType === 'stator_star') {
+    phaseResistance = inp.measuredResistance / 2;
+  } else if (inp.coilType === 'stator_delta') {
+    phaseResistance = inp.measuredResistance * 1.5;
+  } else {
+    phaseResistance = inp.measuredResistance;
+  }
+
+  const Di = inp.innerDiameter / 1000;
+  const De = inp.outerDiameter / 1000;
+  const h = inp.coilHeight / 1000;
+
+  let meanTurnLengthM: number;
+  let windingArea: number;
+
+  if (inp.coilType !== 'electrofrein' && inp.boreDiameter && inp.stackLength) {
+    const D_m = inp.boreDiameter / 1000;
+    const L_m = inp.stackLength / 1000;
+    meanTurnLengthM = Math.PI * (D_m + L_m) / 2 + L_m * 1.3;
+    const phases = inp.phases ?? 3;
+    const slots = inp.slots ?? 36;
+    const polePairs = inp.polePairs ?? 2;
+    const coilsPerPhase = polePairs * (slots / (2 * polePairs * phases));
+    windingArea = (De - Di) / 2 * h;
+    const totalLengthPerPhase = phaseResistance * 1e6 * (windingArea * inp.fillFactor) / (COPPER_RESISTIVITY * 1e6 * meanTurnLengthM);
+    const wireSection = Math.sqrt(COPPER_RESISTIVITY * meanTurnLengthM * totalLengthPerPhase / phaseResistance);
+
+    const std = findStandardWire(wireSection);
+    const totalWireLength = (phaseResistance * std.section) / COPPER_RESISTIVITY;
+    const numberOfTurns = Math.round(totalWireLength / (meanTurnLengthM * 1000) * 1000);
+    const turnsPerSlot = Math.max(1, Math.round(numberOfTurns / coilsPerPhase));
+    const copperMassG = (totalWireLength / 1000) * (std.section / 1e6) * COPPER_DENSITY * 1000;
+    const resistivityCheck = std.section * phaseResistance / (totalWireLength / 1000);
+
+    return {
+      phaseResistance,
+      wireSection,
+      wireDiameter: 1.1284 * Math.sqrt(wireSection),
+      standardWireDiameter: std.diameter,
+      standardWireSection: std.section,
+      numberOfTurns,
+      totalWireLength,
+      meanTurnLength: meanTurnLengthM * 1000,
+      turnsPerSlot,
+      copperMassG,
+      windingArea: windingArea * 1e6,
+      resistivityCheck,
+    };
+  } else {
+    meanTurnLengthM = Math.PI * (Di + De) / 2;
+    windingArea = (De - Di) / 2 * h;
+
+    const section = Math.sqrt(
+      COPPER_RESISTIVITY * inp.fillFactor * (windingArea * 1e6) * (meanTurnLengthM * 1000) / (phaseResistance * 1000)
+    );
+    const std = findStandardWire(section);
+    const totalWireLength = (phaseResistance * std.section) / COPPER_RESISTIVITY;
+    const numberOfTurns = Math.round(totalWireLength / (meanTurnLengthM * 1000) * 1000);
+    const copperMassG = (totalWireLength / 1000) * (std.section / 1e6) * COPPER_DENSITY * 1000;
+    const resistivityCheck = std.section * phaseResistance / (totalWireLength / 1000);
+
+    return {
+      phaseResistance,
+      wireSection: section,
+      wireDiameter: 1.1284 * Math.sqrt(section),
+      standardWireDiameter: std.diameter,
+      standardWireSection: std.section,
+      numberOfTurns,
+      totalWireLength,
+      meanTurnLength: meanTurnLengthM * 1000,
+      copperMassG,
+      windingArea: windingArea * 1e6,
+      resistivityCheck,
+    };
+  }
 }
 
 export function calcElectrofrein(inp: ElectrofreinInputs): ElectrofreinResults {

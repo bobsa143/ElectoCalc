@@ -5,6 +5,7 @@ import StatorCalculator from './components/StatorCalculator';
 import RotorCalculator from './components/RotorCalculator';
 import ElectrofreinCalculator from './components/ElectrofreinCalculator';
 import WireReferenceTable from './components/WireReferenceTable';
+import MesureResistanceCalculator from './components/MesureResistanceCalculator';
 
 export default function App() {
   const [tab, setTab] = useState<TabId>('stator');
@@ -17,6 +18,7 @@ export default function App() {
         {tab === 'stator'        && <StatorCalculator />}
         {tab === 'rotor'         && <RotorCalculator />}
         {tab === 'electrofrein'  && <ElectrofreinCalculator />}
+        {tab === 'mesure'        && <MesureResistanceCalculator />}
         {tab === 'table'         && <WireReferenceTable />}
       </main>
       <footer className="border-t border-slate-200 bg-white mt-12 py-6">

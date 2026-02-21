@@ -1,6 +1,6 @@
-import { Settings, RotateCw, Magnet, Table } from 'lucide-react';
+import { Settings, RotateCw, Magnet, Table, Gauge } from 'lucide-react';
 
-export type TabId = 'stator' | 'rotor' | 'electrofrein' | 'table';
+export type TabId = 'stator' | 'rotor' | 'electrofrein' | 'mesure' | 'table';
 
 interface Tab {
   id: TabId;
@@ -10,10 +10,11 @@ interface Tab {
 }
 
 const TABS: Tab[] = [
-  { id: 'stator',       label: 'Bobine Stator',   sublabel: 'Stator',      icon: Settings  },
-  { id: 'rotor',        label: 'Bobine Rotor',    sublabel: 'Rotor',       icon: RotateCw  },
-  { id: 'electrofrein', label: 'Électrofrein',    sublabel: 'Electrofrein',icon: Magnet    },
-  { id: 'table',        label: 'Table des Fils',  sublabel: 'Table',       icon: Table     },
+  { id: 'stator',       label: 'Bobine Stator',     sublabel: 'Stator',   icon: Settings  },
+  { id: 'rotor',        label: 'Bobine Rotor',      sublabel: 'Rotor',    icon: RotateCw  },
+  { id: 'electrofrein', label: 'Électrofrein',      sublabel: 'Frein',    icon: Magnet    },
+  { id: 'mesure',       label: 'Mesure Résistance', sublabel: 'Mesure',   icon: Gauge     },
+  { id: 'table',        label: 'Table des Fils',    sublabel: 'Table',    icon: Table     },
 ];
 
 interface Props {
