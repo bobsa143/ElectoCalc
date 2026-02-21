@@ -185,6 +185,64 @@ const BoreSVG = () => (
   </svg>
 );
 
+const ACThreePhaseSVG = () => (
+  <svg viewBox="0 0 240 200" className="w-full h-full">
+    <text x="120" y="14" textAnchor="middle" fontSize="9" fill="#0f172a" fontWeight="bold">Alimentation AC 3Ph directe</text>
+    <line x1="20" y1="40" x2="75" y2="40" stroke="#ef4444" strokeWidth="2"/>
+    <line x1="20" y1="70" x2="75" y2="70" stroke="#f97316" strokeWidth="2"/>
+    <line x1="20" y1="100" x2="75" y2="100" stroke="#22c55e" strokeWidth="2"/>
+    <text x="14" y="44" textAnchor="middle" fontSize="9" fill="#ef4444" fontWeight="bold">L1</text>
+    <text x="14" y="74" textAnchor="middle" fontSize="9" fill="#f97316" fontWeight="bold">L2</text>
+    <text x="14" y="104" textAnchor="middle" fontSize="9" fill="#22c55e" fontWeight="bold">L3</text>
+    <rect x="75" y="30" width="90" height="80" fill="#fff7ed" stroke="#d97706" strokeWidth="2" rx="6"/>
+    <text x="120" y="62" textAnchor="middle" fontSize="8" fill="#7c2d12" fontWeight="bold">BOBINE AC</text>
+    <text x="120" y="75" textAnchor="middle" fontSize="7" fill="#92400e">Z = R + jX</text>
+    <text x="120" y="88" textAnchor="middle" fontSize="7" fill="#92400e">cos φ ≈ 0,85</text>
+    <line x1="165" y1="40" x2="215" y2="40" stroke="#ef4444" strokeWidth="2" strokeDasharray="4,2"/>
+    <line x1="165" y1="70" x2="215" y2="70" stroke="#f97316" strokeWidth="2" strokeDasharray="4,2"/>
+    <line x1="165" y1="100" x2="215" y2="100" stroke="#22c55e" strokeWidth="2" strokeDasharray="4,2"/>
+    <rect x="200" y="30" width="30" height="80" fill="#dcfce7" stroke="#16a34a" strokeWidth="1.5" rx="4"/>
+    <text x="215" y="68" textAnchor="middle" fontSize="7" fill="#14532d" fontWeight="bold">3Ph</text>
+    <text x="215" y="80" textAnchor="middle" fontSize="7" fill="#14532d">380V</text>
+    <line x1="75" y1="140" x2="165" y2="140" stroke="#0ea5e9" strokeWidth="2.5" strokeDasharray="none"/>
+    <text x="120" y="155" textAnchor="middle" fontSize="8" fill="#0369a1">Pas de pont de diodes</text>
+    <line x1="50" y1="163" x2="190" y2="163" stroke="#dc2626" strokeWidth="1.5" strokeDasharray="4,3"/>
+    <text x="120" y="178" textAnchor="middle" fontSize="8" fill="#dc2626">Bobine directement sur réseau AC</text>
+  </svg>
+);
+
+const DiodeBridgeSVG = () => (
+  <svg viewBox="0 0 240 200" className="w-full h-full">
+    <text x="120" y="14" textAnchor="middle" fontSize="9" fill="#0f172a" fontWeight="bold">Pont de diodes (DC)</text>
+    <line x1="10" y1="60" x2="50" y2="60" stroke="#64748b" strokeWidth="2"/>
+    <line x1="10" y1="130" x2="50" y2="130" stroke="#64748b" strokeWidth="2"/>
+    <text x="18" y="56" fontSize="8" fill="#64748b">AC~</text>
+    <text x="18" y="148" fontSize="8" fill="#64748b">AC~</text>
+    <polygon points="55,50 55,70 75,60" fill="#3b82f6" stroke="#1d4ed8" strokeWidth="1.5"/>
+    <polygon points="75,50 75,70 55,60" fill="#3b82f6" stroke="#1d4ed8" strokeWidth="1.5"/>
+    <polygon points="55,120 55,140 75,130" fill="#3b82f6" stroke="#1d4ed8" strokeWidth="1.5"/>
+    <polygon points="75,120 75,140 55,130" fill="#3b82f6" stroke="#1d4ed8" strokeWidth="1.5"/>
+    <text x="63" y="48" textAnchor="middle" fontSize="7" fill="#1d4ed8">D1</text>
+    <text x="63" y="88" textAnchor="middle" fontSize="7" fill="#1d4ed8">D2</text>
+    <text x="63" y="118" textAnchor="middle" fontSize="7" fill="#1d4ed8">D3</text>
+    <text x="63" y="158" textAnchor="middle" fontSize="7" fill="#1d4ed8">D4</text>
+    <line x1="75" y1="60" x2="100" y2="60" stroke="#64748b" strokeWidth="1.5"/>
+    <line x1="75" y1="130" x2="100" y2="130" stroke="#64748b" strokeWidth="1.5"/>
+    <line x1="100" y1="55" x2="100" y2="145" stroke="#64748b" strokeWidth="1.5"/>
+    <line x1="100" y1="55" x2="165" y2="55" stroke="#ef4444" strokeWidth="2.5"/>
+    <line x1="100" y1="145" x2="165" y2="145" stroke="#1d4ed8" strokeWidth="2.5"/>
+    <text x="105" y="50" fontSize="8" fill="#dc2626" fontWeight="bold">+DC</text>
+    <text x="105" y="160" fontSize="8" fill="#1d4ed8" fontWeight="bold">−DC</text>
+    <rect x="165" y="70" width="60" height="60" fill="#fef3c7" stroke="#d97706" strokeWidth="2" rx="5"/>
+    <text x="195" y="97" textAnchor="middle" fontSize="8" fill="#7c2d12" fontWeight="bold">Bobine</text>
+    <text x="195" y="109" textAnchor="middle" fontSize="7" fill="#92400e">R = V/I</text>
+    <line x1="165" y1="55" x2="225" y2="55" stroke="#ef4444" strokeWidth="2"/>
+    <line x1="225" y1="55" x2="225" y2="70" stroke="#ef4444" strokeWidth="2"/>
+    <line x1="165" y1="145" x2="225" y2="145" stroke="#1d4ed8" strokeWidth="2"/>
+    <line x1="225" y1="130" x2="225" y2="145" stroke="#1d4ed8" strokeWidth="2"/>
+  </svg>
+);
+
 const ElectrofreinSVG = () => (
   <svg viewBox="0 0 240 200" className="w-full h-full">
     <rect x="20" y="60" width="200" height="80" fill="#fef3c7" stroke="#d97706" strokeWidth="2" rx="8"/>
@@ -313,10 +371,25 @@ const ENTRIES: GlossaryEntry[] = [
     diagram: <PoleSVG />, contexts: ['stator', 'rotor'],
   },
   {
-    term: 'Électrofrein',
-    definition: "Frein électromagnétique. Une bobine de cuivre alimentée en courant continu crée un champ magnétique qui attire un disque ou armature, bloquant la rotation. Le freinage est immédiat à la coupure du courant (fail-safe). Utilisé sur treuils, grues, ascenseurs.",
-    typical: 'Alimentations courantes : 24 V DC, 48 V DC, 110 V DC, 180 V DC',
+    term: 'Électrofrein — Alimentation DC',
+    definition: "Mode d'alimentation le plus courant. La bobine fonctionne en courant continu (DC). Sur un réseau AC monophasé ou biphasé, un pont de diodes externe redresse la tension avant d'alimenter la bobine. Tensions courantes : 24 V, 48 V, 110 V, 180 V DC (obtenues par redressement du secteur 220 V ou via 2 phases du 380 V). La bobine est purement résistive : R = V_dc / I_dc.",
+    formula: 'R = V_dc / I_dc\nP = V_dc × I_dc\nS_fil = √(ρ × kf × A_bob × l_moy / R)',
+    typical: '24 V DC (rectifié depuis 24 V AC) | 48 V DC | 110 V DC | 180 V DC (depuis 230 V AC) | 380 V DC (pont 2 phases)',
     diagram: <ElectrofreinSVG />, contexts: ['electrofrein'],
+  },
+  {
+    term: 'Électrofrein — Alimentation AC 3 phases',
+    definition: "Certains électrofreins sont conçus pour être alimentés directement sur le réseau triphasé 380 V sans pont de diodes. La bobine est dimensionnée pour fonctionner en courant alternatif : elle présente une impédance Z = R + jX. La résistance R dissipe l'énergie (effet Joule) et la réactance X est due à l'inductance de la bobine. Le fil est dimensionné sur la résistance de phase R = Z × cos φ. Il n'y a aucun redressement : la bobine est reliée directement entre deux ou trois phases.",
+    formula: 'Z = V_phase / I_phase  (Ω)\nR = Z × cos φ  (résistance active)\nX = Z × sin φ  (réactance inductive)\nL = X / (2π × f)  (Henry)',
+    typical: 'V_phase = 380 / √3 ≈ 219 V | cos φ ≈ 0,80 à 0,90 | f = 50 Hz',
+    diagram: <ACThreePhaseSVG />, contexts: ['electrofrein'],
+  },
+  {
+    term: 'Pont de diodes (redresseur)',
+    definition: "Circuit électronique composé de 4 diodes (pont de Graetz) qui transforme une tension alternative AC en tension continue DC. Indispensable pour alimenter une bobine d'électrofrein DC depuis le réseau AC. Il se monte en externe entre le réseau secteur et les bornes de la bobine. Pour un réseau triphasé, on utilise un pont à 6 diodes (pont de Graetz triphasé). La tension DC obtenue est proportionnelle à la tension AC d'entrée.",
+    formula: 'Monophasé : V_dc ≈ 0,9 × V_ac\n2 phases 380V : V_dc ≈ 0,9 × 380 ≈ 342 V\n3 phases : V_dc = V_ligne × 3√2/π ≈ 1,35 × V_ligne',
+    typical: 'Courant : selon puissance bobine | Tension inverse : > 2× V_dc | PIV ≥ 800 V pour réseau 380 V',
+    diagram: <DiodeBridgeSVG />, contexts: ['electrofrein'],
   },
   {
     term: 'Facteur de remplissage', symbol: 'kf',
