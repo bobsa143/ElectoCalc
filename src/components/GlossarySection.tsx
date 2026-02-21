@@ -243,6 +243,32 @@ const DiodeBridgeSVG = () => (
   </svg>
 );
 
+const CoilDimensionsSVG = () => (
+  <svg viewBox="0 0 240 200" className="w-full h-full">
+    <text x="120" y="13" textAnchor="middle" fontSize="9" fill="#0f172a" fontWeight="bold">Dimensions du bobineau</text>
+    <ellipse cx="120" cy="50" rx="80" ry="18" fill="#fbbf24" stroke="#d97706" strokeWidth="2"/>
+    <rect x="40" y="50" width="160" height="80" fill="#fbbf24" stroke="#d97706" strokeWidth="2"/>
+    <ellipse cx="120" cy="130" rx="80" ry="18" fill="#fcd34d" stroke="#d97706" strokeWidth="2"/>
+    <ellipse cx="120" cy="50" rx="35" ry="8" fill="#f1f5f9" stroke="#64748b" strokeWidth="1.5"/>
+    <rect x="85" y="50" width="70" height="80" fill="#f1f5f9" stroke="#64748b" strokeWidth="1.5"/>
+    <ellipse cx="120" cy="130" rx="35" ry="8" fill="#e2e8f0" stroke="#64748b" strokeWidth="1.5"/>
+    <line x1="228" y1="50" x2="228" y2="130" stroke="#0f172a" strokeWidth="1.5"/>
+    <line x1="223" y1="50" x2="233" y2="50" stroke="#0f172a" strokeWidth="1.5"/>
+    <line x1="223" y1="130" x2="233" y2="130" stroke="#0f172a" strokeWidth="1.5"/>
+    <text x="236" y="94" fontSize="9" fill="#0f172a" fontWeight="bold">h</text>
+    <line x1="120" y1="148" x2="155" y2="148" stroke="#ef4444" strokeWidth="1.5"/>
+    <line x1="120" y1="144" x2="120" y2="152" stroke="#ef4444" strokeWidth="1.5"/>
+    <line x1="155" y1="144" x2="155" y2="152" stroke="#ef4444" strokeWidth="1.5"/>
+    <text x="137" y="163" textAnchor="middle" fontSize="8" fill="#dc2626" fontWeight="bold">Di/2</text>
+    <line x1="120" y1="172" x2="200" y2="172" stroke="#0ea5e9" strokeWidth="1.5"/>
+    <line x1="120" y1="168" x2="120" y2="176" stroke="#0ea5e9" strokeWidth="1.5"/>
+    <line x1="200" y1="168" x2="200" y2="176" stroke="#0ea5e9" strokeWidth="1.5"/>
+    <text x="160" y="187" textAnchor="middle" fontSize="8" fill="#0369a1" fontWeight="bold">De/2</text>
+    <line x1="120" y1="148" x2="120" y2="176" stroke="#475569" strokeWidth="1" strokeDasharray="3,2"/>
+    <text x="38" y="95" textAnchor="middle" fontSize="7" fill="#92400e">Cu</text>
+  </svg>
+);
+
 const ElectrofreinSVG = () => (
   <svg viewBox="0 0 240 200" className="w-full h-full">
     <rect x="20" y="60" width="200" height="80" fill="#fef3c7" stroke="#d97706" strokeWidth="2" rx="8"/>
@@ -390,6 +416,27 @@ const ENTRIES: GlossaryEntry[] = [
     formula: 'Monophasé : V_dc ≈ 0,9 × V_ac\n2 phases 380V : V_dc ≈ 0,9 × 380 ≈ 342 V\n3 phases : V_dc = V_ligne × 3√2/π ≈ 1,35 × V_ligne',
     typical: 'Courant : selon puissance bobine | Tension inverse : > 2× V_dc | PIV ≥ 800 V pour réseau 380 V',
     diagram: <DiodeBridgeSVG />, contexts: ['electrofrein'],
+  },
+  {
+    term: 'Diamètre intérieur', symbol: 'Di', unit: 'mm',
+    definition: "Diamètre intérieur du bobineau de l'électrofrein. Il correspond au diamètre du noyau central (mandrin) autour duquel le fil de cuivre est bobiné. C'est le diamètre minimum de l'espace de bobinage. Il se mesure à l'intérieur de la gorge d'enroulement avec un pied à coulisse.",
+    formula: 'A_bobinage = ((De - Di) / 2) × h  (mm²)',
+    typical: 'Petits électrofreins : 20–40 mm | Moyens : 40–80 mm | Grands : 80–150 mm',
+    diagram: <CoilDimensionsSVG />, contexts: ['electrofrein'],
+  },
+  {
+    term: 'Diamètre extérieur', symbol: 'De', unit: 'mm',
+    definition: "Diamètre extérieur du bobineau de l'électrofrein. Il définit la limite radiale maximale de l'enroulement. La différence (De − Di) donne la largeur radiale disponible pour le cuivre. Plus cette différence est grande, plus on peut loger de fil.",
+    formula: 'Largeur radiale = (De - Di) / 2\nA_bobinage = ((De - Di) / 2) × h',
+    typical: 'Ratio De/Di courant : 1,5 à 2,5 | Bobinage serré : De/Di ≈ 2',
+    diagram: <CoilDimensionsSVG />, contexts: ['electrofrein'],
+  },
+  {
+    term: 'Hauteur du bobineau', symbol: 'h', unit: 'mm',
+    definition: "Hauteur axiale du bobineau de l'électrofrein, mesurée dans l'axe de la bobine. Avec le diamètre intérieur et extérieur, elle détermine la section disponible pour le bobinage (A_bobinage). C'est la troisième cote indispensable pour calculer le nombre de spires.",
+    formula: 'A_bobinage = ((De - Di) / 2) × h  (mm²)\nN = A_bob × kf / (π × d²/4)',
+    typical: 'Hauteur courante : 15 à 60 mm | Bobines plates : h < Di/4',
+    diagram: <CoilDimensionsSVG />, contexts: ['electrofrein'],
   },
   {
     term: 'Facteur de remplissage', symbol: 'kf',
