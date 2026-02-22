@@ -452,7 +452,7 @@ const ENTRIES: GlossaryEntry[] = [
     definition: "Vue éclatée d'un électrofrein réel montrant ses 3 composants principaux :\n\n• Carcasse magnétique (fonte) : corps annulaire en fonte grise, usiné avec précision. Elle referme le circuit magnétique et sert de support mécanique. Les encoches radiales forment les pôles magnétiques. On mesure Di (diamètre intérieur de la gorge) et De (diamètre extérieur) directement sur cette pièce au pied à coulisse.\n\n• Bobine cuivre (bobineau) : enroulement de fil de cuivre émaillé bobiné dans la gorge annulaire. Visible en orange dans les encoches de la carcasse du milieu. La hauteur h se mesure axialement, Di et De radialement dans la gorge.\n\n• Spires de rechange (bas) : bobines de fil de cuivre prêtes à l'emploi pour le rebobinage. Le nombre de spires N et le diamètre de fil d se calculent à partir de Di, De, h et du facteur de remplissage kf.",
     formula: 'A_bobinage = ((De - Di) / 2) × h\nN = (A_bob × kf) / (π × d² / 4)',
     typical: 'Di : 30–120 mm | De : 60–200 mm | h : 15–60 mm | kf : 0,55–0,75',
-    diagram: <img src="/images/ChatGPT_Image_21_fevr._2026,_23_51_24.png" alt="Électrofrein éclaté — carcasse, bobine, spires" className="w-full h-full object-contain rounded-lg" />,
+    diagram: <img src="/images/d3b3f459-907a-4fdd-87f9-c6119a5ab2bc.png" alt="Comment mesurer Di — Diamètre Intérieur électrofrein" className="w-full h-full object-contain rounded-lg" />,
     contexts: ['electrofrein'],
   },
   {
@@ -461,7 +461,7 @@ const ENTRIES: GlossaryEntry[] = [
     definition: "Vues 3D d'un électrofrein assemblé montrant les différentes perspectives pour la prise de mesures :\n\n• Vue du dessus (haut) : électrofrein complet avec câbles de sortie. On voit les bobines cuivre logées dans les encoches de la carcasse. Pour mesurer De, placer le pied à coulisse sur le diamètre extérieur de la gorge visible.\n\n• Vue en coupe (milieu) : coupe transversale révélant la profondeur de l'enroulement. Les fils cuivre (orange) sont nettement visibles. La hauteur h se mesure de l'épaulement inférieur au bord supérieur de la gorge. L'isolant vert (ruban kapton) protège la bobine.\n\n• Vue de dessous (bas) : face opposée montrant l'accès à la gorge vide pour mesurer Di. Placer les mâchoires intérieures du pied à coulisse dans l'alésage central pour relever Di avec précision.",
     formula: 'R_bobine = ρ_Cu × l_moy × N / S_fil\nl_moy = π × (Di + De) / 2\nP_bobine = V² / R',
     typical: 'Résistivité Cu : ρ = 0,0175 Ω·mm²/m | T° max bobine : 130–180 °C (classe F/H)',
-    diagram: <img src="/images/ChatGPT_Image_22_fevr._2026,_00_00_00.png" alt="Électrofrein bobinage en place — vues 3D" className="w-full h-full object-contain rounded-lg" />,
+    diagram: <img src="/images/ea181b44-cadb-478f-b1f6-aa29e8e3bda1.png" alt="Mesure Di, De, h — surface de bobinage électrofrein" className="w-full h-full object-contain rounded-lg" />,
     contexts: ['electrofrein'],
   },
 ];
