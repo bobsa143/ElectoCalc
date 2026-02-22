@@ -12,6 +12,7 @@ interface GlossaryEntry {
   typical?: string;
   diagram: React.ReactNode;
   contexts: Context[];
+  photoFigure?: boolean;
 }
 
 const MotorCrossSVG = () => (
@@ -445,6 +446,24 @@ const ENTRIES: GlossaryEntry[] = [
     typical: 'Machine automatique : 0,65–0,75 | Bobinage manuel : 0,55–0,65',
     diagram: <FillFactorSVG />, contexts: ['electrofrein'],
   },
+  {
+    photoFigure: true,
+    term: 'Électrofrein — Carcasse et bobine (vue éclatée)',
+    definition: "Vue éclatée d'un électrofrein réel montrant ses 3 composants principaux :\n\n• Carcasse magnétique (fonte) : corps annulaire en fonte grise, usiné avec précision. Elle referme le circuit magnétique et sert de support mécanique. Les encoches radiales forment les pôles magnétiques. On mesure Di (diamètre intérieur de la gorge) et De (diamètre extérieur) directement sur cette pièce au pied à coulisse.\n\n• Bobine cuivre (bobineau) : enroulement de fil de cuivre émaillé bobiné dans la gorge annulaire. Visible en orange dans les encoches de la carcasse du milieu. La hauteur h se mesure axialement, Di et De radialement dans la gorge.\n\n• Spires de rechange (bas) : bobines de fil de cuivre prêtes à l'emploi pour le rebobinage. Le nombre de spires N et le diamètre de fil d se calculent à partir de Di, De, h et du facteur de remplissage kf.",
+    formula: 'A_bobinage = ((De - Di) / 2) × h\nN = (A_bob × kf) / (π × d² / 4)',
+    typical: 'Di : 30–120 mm | De : 60–200 mm | h : 15–60 mm | kf : 0,55–0,75',
+    diagram: <img src="/images/ChatGPT_Image_21_fevr._2026,_23_51_24.png" alt="Électrofrein éclaté — carcasse, bobine, spires" className="w-full h-full object-contain rounded-lg" />,
+    contexts: ['electrofrein'],
+  },
+  {
+    photoFigure: true,
+    term: 'Électrofrein — Bobinage en place (vue 3D)',
+    definition: "Vues 3D d'un électrofrein assemblé montrant les différentes perspectives pour la prise de mesures :\n\n• Vue du dessus (haut) : électrofrein complet avec câbles de sortie. On voit les bobines cuivre logées dans les encoches de la carcasse. Pour mesurer De, placer le pied à coulisse sur le diamètre extérieur de la gorge visible.\n\n• Vue en coupe (milieu) : coupe transversale révélant la profondeur de l'enroulement. Les fils cuivre (orange) sont nettement visibles. La hauteur h se mesure de l'épaulement inférieur au bord supérieur de la gorge. L'isolant vert (ruban kapton) protège la bobine.\n\n• Vue de dessous (bas) : face opposée montrant l'accès à la gorge vide pour mesurer Di. Placer les mâchoires intérieures du pied à coulisse dans l'alésage central pour relever Di avec précision.",
+    formula: 'R_bobine = ρ_Cu × l_moy × N / S_fil\nl_moy = π × (Di + De) / 2\nP_bobine = V² / R',
+    typical: 'Résistivité Cu : ρ = 0,0175 Ω·mm²/m | T° max bobine : 130–180 °C (classe F/H)',
+    diagram: <img src="/images/ChatGPT_Image_22_fevr._2026,_00_00_00.png" alt="Électrofrein bobinage en place — vues 3D" className="w-full h-full object-contain rounded-lg" />,
+    contexts: ['electrofrein'],
+  },
 ];
 
 interface Props {
@@ -496,12 +515,12 @@ export default function GlossarySection({ context }: Props) {
                 </button>
 
                 {isExp && (
-                  <div className="grid grid-cols-1 md:grid-cols-2">
-                    <div className="p-4 space-y-3">
-                      <p className="text-sm text-slate-700 leading-relaxed">{entry.definition}</p>
+                  entry.photoFigure ? (
+                    <div className="p-4 space-y-4">
+                      <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-line">{entry.definition}</p>
                       {entry.formula && (
                         <div className="bg-slate-900 rounded-lg px-4 py-3">
-                          <p className="text-xs text-slate-400 uppercase tracking-wide font-semibold mb-1">Formule</p>
+                          <p className="text-xs text-slate-400 uppercase tracking-wide font-semibold mb-1">Formules</p>
                           <p className="text-sm font-mono text-cyan-300 whitespace-pre-line">{entry.formula}</p>
                         </div>
                       )}
@@ -511,13 +530,37 @@ export default function GlossarySection({ context }: Props) {
                           <p className="text-xs text-amber-800">{entry.typical}</p>
                         </div>
                       )}
+                      <div className="bg-slate-50 rounded-xl border border-slate-200 p-3 flex justify-center">
+                        <div className="w-full max-w-md">
+                          {entry.diagram}
+                        </div>
+                      </div>
+                      <p className="text-xs text-slate-400 text-center italic">Figure — {entry.term}</p>
                     </div>
-                    <div className="flex items-center justify-center p-4 bg-slate-50 border-l border-slate-100 min-h-[180px]">
-                      <div className="w-full max-w-[220px] aspect-square">
-                        {entry.diagram}
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2">
+                      <div className="p-4 space-y-3">
+                        <p className="text-sm text-slate-700 leading-relaxed">{entry.definition}</p>
+                        {entry.formula && (
+                          <div className="bg-slate-900 rounded-lg px-4 py-3">
+                            <p className="text-xs text-slate-400 uppercase tracking-wide font-semibold mb-1">Formule</p>
+                            <p className="text-sm font-mono text-cyan-300 whitespace-pre-line">{entry.formula}</p>
+                          </div>
+                        )}
+                        {entry.typical && (
+                          <div className="bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                            <p className="text-xs text-amber-600 font-semibold uppercase tracking-wide mb-0.5">Valeurs typiques</p>
+                            <p className="text-xs text-amber-800">{entry.typical}</p>
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex items-center justify-center p-4 bg-slate-50 border-l border-slate-100 min-h-[180px]">
+                        <div className="w-full max-w-[220px] aspect-square">
+                          {entry.diagram}
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  )
                 )}
               </div>
             );
